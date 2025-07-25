@@ -6,13 +6,19 @@ A Dockerfile for building the [Speech-AI-Forge](https://github.com/lenML/Speech-
 Debian 13 Linux，docker-ce (Docker version 28.3.2, build 578ccf6)
 INTEL CPU(AMD64)
 
+## 特点
+* 容器不采用root，而是以uid=1000, user=webui运行映射到当前用户和当前路径。
+* 镜像中的[Speech-AI-Forge](https://github.com/lenML/Speech-AI-Forge)代码不保留.git仓库，因此运行时会出现三行git错误提示。可以删除.dockerignore中的*/.git来避免。
+* 已经测试成功：
+    webui.py支持下的Web界面，以及该界面下的ChatTTS，CosyVoice2-0.5B。
+
 ## 代码组织
 * [Speech-AI-Forge/](https://github.com/lenML/Speech-AI-Forge) 以子模块方式存放原始代码，不作改动。源代码补丁在打包镜像时完成。
 * docker/	存放构建镜像所需要的脚本、补丁等
 * models/ 存放容器运行时下载的模型文件
 * build.sh 构建镜像
-* run.sh    创建容器并开启WebUI/API服务
-* cli.sh       创建容器并打开交互命令行
+* run.sh  创建容器并开启WebUI/API服务
+* cli.sh  创建容器并打开交互命令行
 
 ## 如何使用
 用 build.sh 构建镜像。
