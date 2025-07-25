@@ -1,0 +1,3 @@
+[submodule "Speech-AI-Forge"]
+	path = Speech-AI-Forge
+	url = https://github.com/lenML/Speech-AI-Forge.git
