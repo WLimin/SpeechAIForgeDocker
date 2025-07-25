@@ -30,14 +30,18 @@ ENV PATH=/opt/conda/bin:/opt/conda/envs/${VENV}/bin:$PATH
 WORKDIR /app
 
 # Copy the requirements file for Python dependencies
-COPY ./requirements.txt /app/requirements.txt
+COPY docker/requirements.txt /app/requirements.txt
 
-# Install Python dependencies using Tsinghua's PyPI mirror and clean up cache to reduce image size
+# Install Python dependencies using aliyun's PyPI mirror and clean up cache to reduce image size
 RUN --mount=type=cache,target=/root/.cache/pip  \
   python -m pip install --no-cache-dir -r /app/requirements.txt -i https://mirrors.aliyun.com/pypi/simple  
 
+COPY Speech-AI-Forge /app/Speech-AI-Forge
+
 RUN rm -rf /root/.cache/pip && conda clean --all && chown -R ${USER}:${USER} /app  \
   && sed -i -e 's#"https://huggingface.co#"https://hf-mirror.com#g' /opt/conda/lib/python3.1*/site-packages/huggingface_hub/constants.py 
+
+COPY docker /app/docker
 
 USER ${USER}
 ENV HOME=/home/${USER}
@@ -45,8 +49,9 @@ WORKDIR $HOME
 
 ENV PATH=/opt/conda/bin:/opt/conda/envs/${VENV}/bin:$PATH
 RUN /opt/conda/bin/python3.11 -m venv  --system-site-packages ${VENV} \
- && echo "source $HOME/${VENV}/bin/activate" >> ${HOME}/.bashrc && source $HOME/${VENV}/bin/activate 
-
-WORKDIR /app
+ && echo "source $HOME/${VENV}/bin/activate" >> ${HOME}/.bashrc && source $HOME/${VENV}/bin/activate \
+ && bash /app/docker/patch.sh
+ 
+WORKDIR /app/Speech-AI-Forge
 # Set the default command (modify as needed based on your application)
 CMD ["bash"]
