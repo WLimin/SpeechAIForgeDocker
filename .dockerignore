@@ -1,0 +1,9 @@
+*/.git
+*/.github
+*/.gitignore
+*/.gitattributes
+.dockerignore
+results
+data
+*.filelist
+models
