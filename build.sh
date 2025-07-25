@@ -1,4 +1,4 @@
 #!/bin/bash
 
-docker build -t chat-tts-forge docker/
+docker build -t chat-tts-forge -f docker/Dockerfile .
 
