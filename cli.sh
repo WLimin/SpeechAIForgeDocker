@@ -11,11 +11,7 @@ CONTAINER_NAME=chat-tts-forge-webui
 # 检查专属网络是否创建，用于OpenWebui+ollama的语音交互。可以直接用容器名和端口作为主机名及端口进行内部通信，无需NAT路由
 DOCKER_NET=openwebui-net
 
-# 重复利用其它项目已经下载的模型，可以全部移动到${VOLUMES}/models目录下。若不需要，设置为空
-LINK_MODELS=$"
-    -v ${VOLUMES}/../FunAudioLLM/pretrained_models/CosyVoice2-0.5B:/app/Speech-AI-Forge/models/CosyVoice2-0.5B \
-    -v ${VOLUMES}/../FunAudioLLM/pretrained_models/modelscope/hub/iic/SenseVoiceSmall:/app/Speech-AI-Forge/models/SenseVoiceSmall \
-"
+# 传递给容器的默认命令行
 CMD_ARG=
 
 source ${VOLUMES}/common.sh
