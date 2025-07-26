@@ -10,6 +10,7 @@
 LINK_MODELS=$"
     -v ${VOLUMES}/../FunAudioLLM/pretrained_models/CosyVoice2-0.5B:/app/Speech-AI-Forge/models/CosyVoice2-0.5B \
     -v ${VOLUMES}/../FunAudioLLM/pretrained_models/modelscope/hub/iic/SenseVoiceSmall:/app/Speech-AI-Forge/models/SenseVoiceSmall \
+    -v ${VOLUMES}/../SparkAudio/pretrained_models/Spark-TTS-0.5B:/app/Speech-AI-Forge/models/Spark-TTS-0.5B \
     -v ${VOLUMES}/../RVC-Boss/models/GPT_SoVITS/pretrained_models:/app/Speech-AI-Forge/models/gpt_sovits_v4 \
     -v ${VOLUMES}/../RVC-Boss/models/nltk_data:/app/Speech-AI-Forge/models/nltk_data \
     -v ${VOLUMES}/../RVC-Boss/models/tools/asr/models/faster-whisper-large-v3:/app/Speech-AI-Forge/models/faster-whisper-large-v3 \
