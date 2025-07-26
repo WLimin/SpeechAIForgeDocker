@@ -6,6 +6,16 @@
 # LINK_MODELS
 # CMD_ARG
 
+# 重复利用其它项目已经下载的模型，可以全部移动到${VOLUMES}/models目录下。若不需要，设置为空
+LINK_MODELS=$"
+    -v ${VOLUMES}/../FunAudioLLM/pretrained_models/CosyVoice2-0.5B:/app/Speech-AI-Forge/models/CosyVoice2-0.5B \
+    -v ${VOLUMES}/../FunAudioLLM/pretrained_models/modelscope/hub/iic/SenseVoiceSmall:/app/Speech-AI-Forge/models/SenseVoiceSmall \
+    -v ${VOLUMES}/../RVC-Boss/models/GPT_SoVITS/pretrained_models:/app/Speech-AI-Forge/models/gpt_sovits_v4 \
+    -v ${VOLUMES}/../RVC-Boss/models/nltk_data:/app/Speech-AI-Forge/models/nltk_data \
+    -v ${VOLUMES}/../RVC-Boss/models/tools/asr/models/faster-whisper-large-v3:/app/Speech-AI-Forge/models/faster-whisper-large-v3 \
+    -v ${VOLUMES}/../RVC-Boss/models/tools/asr/models/speech_fsmn_vad_zh-cn-16k-common-pytorch:/app/Speech-AI-Forge/models/fsmn-vad \
+"
+
 GIT_TAG=$(git -C Speech-AI-Forge describe --tags)
 GIT_COMMIT=$(git -C Speech-AI-Forge rev-parse HEAD)
 GIT_BRANCH=$(git -C Speech-AI-Forge rev-parse --abbrev-ref HEAD)
@@ -42,6 +52,7 @@ cli_common() {
             -v ${VOLUMES}/models:/app/Speech-AI-Forge/models\
             --user $(id -u):$(id -g) \
             -e CAPABILITIES=${CAPABILITIES} \
+            -e NLTK_DATA="/app/Speech-AI-Forge/models/nltk_data" \
             -e V_GIT_TAG="$GIT_TAG" -e V_GIT_COMMIT="$GIT_COMMIT" -e V_GIT_BRANCH="$GIT_BRANCH" \
             $LINK_MODELS \
          chat-tts-forge $CMD_ARG

@@ -47,11 +47,11 @@ USER ${USER}
 ENV HOME=/home/${USER}
 WORKDIR $HOME
 
-ENV PATH=/opt/conda/bin:/opt/conda/envs/${VENV}/bin:$PATH
 RUN /opt/conda/bin/python3.11 -m venv  --system-site-packages ${VENV} \
  && echo "source $HOME/${VENV}/bin/activate" >> ${HOME}/.bashrc && source $HOME/${VENV}/bin/activate \
  && bash /app/docker/patch.sh
- 
+ENV LD_LIBRARY_PATH=/opt/conda/lib/python3.11/site-packages/nvidia/cudnn/lib:$LD_LIBRARY_PATH
+ENV NLTK_DATA=/app/Speech-AI-Forge/models/nltk_data
 WORKDIR /app/Speech-AI-Forge
 # Set the default command (modify as needed based on your application)
 CMD ["bash"]
