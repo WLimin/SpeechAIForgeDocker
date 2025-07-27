@@ -21,6 +21,14 @@ GIT_TAG=$(git -C Speech-AI-Forge describe --tags)
 GIT_COMMIT=$(git -C Speech-AI-Forge rev-parse HEAD)
 GIT_BRANCH=$(git -C Speech-AI-Forge rev-parse --abbrev-ref HEAD)
 
+# 宿主机是否有 nvidia GPU
+which nvidia-smi
+if [ $? -eq 0 ]; then #有gpu支持
+    NV_GPU=1
+else
+    NV_GPU=0
+fi
+
 cli_common() {
     # 检查专属网络是否创建，用于OpenWebui+ollama的语音交互
     docker network ls --format '{{.Name}}' | grep "${DOCKER_NET}"
@@ -36,8 +44,7 @@ cli_common() {
     else
         # 不存在
         # 宿主机是否有 nvidia GPU
-        which nvidia-smi
-        if [ $? -eq 0 ]; then #有gpu支持
+        if [ $NV_GPU -eq 1 ]; then #有gpu支持
             RUN_USE_GPU="--name ${CONTAINER_NAME} --gpus all"
         else
             RUN_USE_GPU="--name ${CONTAINER_NAME} "
