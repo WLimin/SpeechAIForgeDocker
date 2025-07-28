@@ -113,6 +113,8 @@ moviepy==1.0.3
 ### downloader script
 modelscope==1.20.0
 
+deepspeed==0.15.1; sys_platform == 'linux'
+
 ### PyTorch Dependencies (using custom source for CUDA)
 --extra-index-url https://download.pytorch.org/whl/cu128
 torch==2.7.1+cu128
