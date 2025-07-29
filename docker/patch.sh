@@ -1,5 +1,6 @@
 #!/bin/bash
 # 目标：容易删除容器且不再次下载
+echo "Apply some source file patch..."
 # AttributeError: module 'torch.serialization' has no attribute 'FILE_LIKE'
 sed -i -e 's/FILE_LIKE/FileLike/g' /app/Speech-AI-Forge/modules/repos_static/ChatTTS/ChatTTS/core.py /app/Speech-AI-Forge/modules/repos_static/ChatTTS/ChatTTS/model/tokenizer.py
 # CosyVoiceModel change to cosyvoice2.yaml
@@ -18,7 +19,7 @@ sed -i -e 's/"git_commit": /"git_commit": os.environ.get("V_GIT_COMMIT") or /g' 
 # In offline it won't work that use downloading models from modelscope hub.
 # download models from model hub: ms
 
-:<<'ERR_REM'
+:<<'REM_B1'
  #python3 webui.py --api
 ...
 Traceback (most recent call last):
@@ -39,15 +40,16 @@ RuntimeError: Cannot add middleware after an application has started
 不可思议的错误。我也不会调整fastapi执行顺序，将middlewar编排在app运行之前。注释。
 
 另外，webui.py --api启动的服务仍然在gui的7860端口。
-ERR_REM
+REM_B1
 
-:<<'ERR_REM'
+:<<'REM_B2'
 sed -i -e '/@self.app.middleware("http")/s/^/# /' /app/Speech-AI-Forge/modules/api/Api.py
 
   File "/app/Speech-AI-Forge/modules/core/pipeline/factory.py", line 134, in create
     raise Exception(f"Unknown model id: {model_id}")
 Exception: Unknown model id: fireredtts
-ERR_REM
+REM_B2
 
 sed -i -e  's/elif model_id == "firered"/elif model_id == "fireredtts"/g' /app/Speech-AI-Forge/modules/core/pipeline/factory.py
 
+echo "done."
