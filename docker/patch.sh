@@ -41,5 +41,13 @@ RuntimeError: Cannot add middleware after an application has started
 另外，webui.py --api启动的服务仍然在gui的7860端口。
 ERR_REM
 
+:<<'ERR_REM'
 sed -i -e '/@self.app.middleware("http")/s/^/# /' /app/Speech-AI-Forge/modules/api/Api.py
+
+  File "/app/Speech-AI-Forge/modules/core/pipeline/factory.py", line 134, in create
+    raise Exception(f"Unknown model id: {model_id}")
+Exception: Unknown model id: fireredtts
+ERR_REM
+
+sed -i -e  's/elif model_id == "firered"/elif model_id == "fireredtts"/g' /app/Speech-AI-Forge/modules/core/pipeline/factory.py
 
