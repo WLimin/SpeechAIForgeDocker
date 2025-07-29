@@ -53,4 +53,21 @@ REM_B2
 
 sed -i -e  's/elif model_id == "firered"/elif model_id == "fireredtts"/g' /app/Speech-AI-Forge/modules/core/pipeline/factory.py
 
+:<<'REM_B3'
+  File "/app/Speech-AI-Forge/modules/devices/devices.py", line 204, in get_gpu_memory
+    total_memory = torch.cuda.get_device_properties(0).total_memory
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/lib/python3.11/site-packages/torch/cuda/__init__.py", line 576, in get_device_properties
+    _lazy_init()  # will define _get_device_properties
+    ^^^^^^^^^^^^
+  File "/opt/conda/lib/python3.11/site-packages/torch/cuda/__init__.py", line 372, in _lazy_init
+    torch._C._cuda_init()
+RuntimeError: Found no NVIDIA driver on your system. Please check that you have an NVIDIA GPU and installed a driver from http://www.nvidia.com/Download/index.aspx
+
+REM_B3
+
+sed -i -e '/torch.cuda.get_device_properties(0).total_memory/s/$/ if torch.cuda.is_available() else 0/' /app/Speech-AI-Forge/modules/devices/devices.py
+sed -i -e '/torch.cuda.memory_reserved(0)/s/$/ if torch.cuda.is_available() else 0/' /app/Speech-AI-Forge/modules/devices/devices.py
+sed -i -e '/torch.cuda.memory_allocated(0/s/$/ if torch.cuda.is_available() else 0/' /app/Speech-AI-Forge/modules/devices/devices.py
+
 echo "done."
