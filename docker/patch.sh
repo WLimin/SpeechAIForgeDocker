@@ -70,4 +70,18 @@ sed -i -e '/torch.cuda.get_device_properties(0).total_memory/s/$/ if torch.cuda.
 sed -i -e '/torch.cuda.memory_reserved(0)/s/$/ if torch.cuda.is_available() else 0/' /app/Speech-AI-Forge/modules/devices/devices.py
 sed -i -e '/torch.cuda.memory_allocated(0/s/$/ if torch.cuda.is_available() else 0/' /app/Speech-AI-Forge/modules/devices/devices.py
 
+:<<'REM_B4'
+ modules.core.models.tts.FireRed.FireRedTTSModel - INFO - loadding FireRedTTS...
+Traceback (most recent call last):
+ File "/app/Speech-AI-Forge/modules/repos_static/FireRedTTS/fireredtts/modules/codec/speaker.py", line 1040, in __init__
+    model.load_state_dict(torch.load(ckpt_path), strict=True)
+                          ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/lib/python3.11/site-packages/torch/serialization.py", line 605, in _validate_device
+    raise RuntimeError(
+RuntimeError: Attempting to deserialize object on a CUDA device but torch.cuda.is_available() is False. If you are running on a CPU-only machine, please use torch.load with map_location=torch.device('cpu') to map your storages to the CPU.
+
+REM_B4
+
+sed -i -e 's/\(model.load_state_dict(torch.load(ckpt_path\)\(), strict=True)\)/\1, map_location=torch.device(device)\2/g' /app/Speech-AI-Forge/modules/repos_static/FireRedTTS/fireredtts/modules/codec/speaker.py
+
 echo "done."
