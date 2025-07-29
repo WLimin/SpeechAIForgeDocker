@@ -15,6 +15,7 @@ LINK_MODELS=$"
     -v ${VOLUMES}/../RVC-Boss/models/nltk_data:/app/Speech-AI-Forge/models/nltk_data \
     -v ${VOLUMES}/../RVC-Boss/models/tools/asr/models/faster-whisper-large-v3:/app/Speech-AI-Forge/models/faster-whisper-large-v3 \
     -v ${VOLUMES}/../RVC-Boss/models/tools/asr/models/speech_fsmn_vad_zh-cn-16k-common-pytorch:/app/Speech-AI-Forge/models/fsmn-vad \
+    -v ${VOLUMES}/models/tagger_cache:/app/Speech-AI-Forge/modules/repos_static/index_tts/indextts/utils/tagger_cache \
 "
 
 GIT_TAG=$(git -C Speech-AI-Forge describe --tags)
