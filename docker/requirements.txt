@@ -53,7 +53,7 @@ pyrootutils==1.0.4
 loralib==0.1.2
 wandb==0.17.4
 # NOTE: 安装这个是为了保证没有 Import error 其实是用不到的，所以版本可能不对
-accelerate==1.6.0
+#accelerate==1.6.0
 
 ### cosyvoice
 hyperpyyaml==1.2.2
@@ -119,6 +119,25 @@ torch==2.7.1+cu128
 torchvision
 torchaudio==2.7.1+cu128
 
-# deepspeed==0.15.1; sys_platform == 'linux'
+# 使用了pytorch/pytorch镜像，不存在nvcc。需要安装 NVIDIA CUDA Toolkit，或采用 nvidia/cuda镜像。deepspeed 依赖 nvcc，放弃。
+# deepspeed requirement, https://github.com/deepspeedai/DeepSpeed/blob/master/requirements/requirements.txt
+# deepspeed >=0.15.1; sys_platform == 'linux'
 # accelerate>=1.7.0
-
+# # einops
+# hjson
+# msgpack
+# ninja
+# # numpy
+# packaging>=20.0
+# psutil
+# py-cpuinfo
+# # pydantic>=2.0.0
+# # torch
+# # tqdm
+# google
+# lm-eval==0.3.0
+# protobuf
+# qtorch
+# safetensors
+# sentencepiece
+# # transformers>=4.32.1
