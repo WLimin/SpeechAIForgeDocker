@@ -13,13 +13,14 @@ ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 ENV DEBIAN_FRONTEN=noninteractive
 ENV PYTHONUNBUFFERED=1
 SHELL ["/bin/bash", "--login", "-c"]
-
+ENV TZ=Asia/Shanghai
 # 更新并安装需要的程序
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     sed -i -e 's#archive.ubuntu.com#mirrors.ustc.edu.cn#g' -e 's#security.ubuntu.com#mirrors.ustc.edu.cn#g' /etc/apt/sources.list \
     && apt-get update -y --fix-missing \
     && apt-get install -y git build-essential curl wget ffmpeg unzip git git-lfs sox libsox-dev tar bash vim rubberband-cli \
+    && DEBIAN_FRONTEND=noninteractive apt install -y tzdata \
     && apt-get clean && git lfs install && git config --global --add safe.directory '*' \
     && python -m pip config set global.index-url https://mirrors.aliyun.com/pypi/simple && useradd -l -u $UID -U -m -s /bin/bash ${USER}
 
