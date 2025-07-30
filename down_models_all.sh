@@ -2,14 +2,18 @@
 #创建 Speech-AI-Forge 需要的所有模型目录及下载模型
 # 2025-07-30 14:18:42
 # 外部工具 wget unzip bash
+
+#要下载的模型保存位置，默认当前目录下
+MOOD_ZOOM=$PWD/models
+
 mkdir_all(){
-    mkdir -p models/{OpenVoiceV2,resemble-enhance,F5-TTS/F5TTS_v1_Base,FireRedTTS,faster-whisper-large-v3-turbo-ct2,\
+    mkdir -p ${MOOD_ZOOM}/{OpenVoiceV2,resemble-enhance,F5-TTS/F5TTS_v1_Base,FireRedTTS,faster-whisper-large-v3-turbo-ct2,\
 Index-TTS-1.5,tagger_cache,CosyVoice2-0.5B/{CosyVoice-BlankEN,asset},fish-speech-1_4,faster-whisper-large-v3,Lora,\
 Spark-TTS-0.5B/{wav2vec2-large-xlsr-53,LLM,src/figures,src/logo,BiCodec},Denoise,\
 nltk_data/{taggers/{averaged_perceptron_tagger_eng,averaged_perceptron_tagger},corpora/cmudict},\
 ChatTTS/{asset/{tokenizer,gpt},config},vocos-mel-24khz,SenseVoiceSmall/{example,fig},fsmn-vad/{example,fig},\
 gpt_sovits_v4/{chinese-hubert-base,gsv-v2final-pretrained,fast_langdetect,gsv-v4-pretrained,\
-models--nvidia--bigvgan_v2_24khz_100band_256x,chinese-roberta-wwm-ext-large}}
+models--nvidia--bigvgan_v2_24khz_100band_256x,chinese-roberta-wwm-ext-large,v2Pro,sv}}
 }
 #下载指定列表
 wget_required_list(){
@@ -20,7 +24,7 @@ wget_required_list(){
     fi
     REQUIRED_URL="${MODEL_REPO_URL}/${MODEL_REPO_ID}/resolve/${MAIN}"
     for Required_File in ${REQUIRED_FILES[@]}; do
-        wget -c ${REQUIRED_URL}/${Required_File} -O ${LOCAL_BASE_DIR}/${Required_File}
+        wget -c ${REQUIRED_URL}/${Required_File} -O ${MOOD_ZOOM}/${LOCAL_BASE_DIR}/${Required_File}
     done
 }
 
@@ -30,7 +34,7 @@ mkdir_all
 echo "Download ChatTTS..."
 MODEL_REPO_URL="https://modelscope.cn/models"
 MODEL_REPO_ID="AI-ModelScope/ChatTTS"
-LOCAL_BASE_DIR="models/ChatTTS"
+LOCAL_BASE_DIR="ChatTTS"
 REQUIRED_FILES=( "asset/DVAE.pt" "asset/DVAE_full.pt" "asset/Decoder.pt" "asset/GPT.pt" \
  "asset/Vocos.pt" "asset/spk_stat.pt" "asset/tokenizer.pt" "asset/tokenizer/special_tokens_map.json" \
  "asset/tokenizer/tokenizer.json" "asset/tokenizer/tokenizer_config.json" \
@@ -41,7 +45,7 @@ echo "Download CosyVoice2-0.5B..."
 #https://hf-mirror.com/FunAudioLLM/CosyVoice2-0.5B 24小时前被清空，https://modelscope.cn/models/iic/CosyVoice2-0.5B 正常
 MODEL_REPO_URL="https://modelscope.cn/models"
 MODEL_REPO_ID="iic/CosyVoice2-0.5B"
-LOCAL_BASE_DIR="models/CosyVoice2-0.5B"
+LOCAL_BASE_DIR="CosyVoice2-0.5B"
 REQUIRED_FILES=("campplus.onnx" "configuration.json" "cosyvoice2.yaml" "flow.pt" "hift.pt" "llm.pt" "speech_tokenizer_v2.onnx" \
  "CosyVoice-BlankEN/model.safetensors" "CosyVoice-BlankEN/config.json" "CosyVoice-BlankEN/generation_config.json" \
  "CosyVoice-BlankEN/merges.txt" "CosyVoice-BlankEN/tokenizer_config.json" "CosyVoice-BlankEN/vocab.json" "README.md" )
@@ -50,35 +54,35 @@ wget_required_list "master"
 echo "Download F5-TTS V1.25..."
 MODEL_REPO_URL="https://hf-mirror.com"
 MODEL_REPO_ID="SWivid/F5-TTS"
-LOCAL_BASE_DIR="models/F5-TTS"
+LOCAL_BASE_DIR="F5-TTS"
 REQUIRED_FILES=("F5TTS_v1_Base/model_1250000.safetensors" )
 wget_required_list
 
 echo "Download faster-whisper-large-v3..."
 MODEL_REPO_URL="https://hf-mirror.com"
 MODEL_REPO_ID="Systran/faster-whisper-large-v3"
-LOCAL_BASE_DIR="models/faster-whisper-large-v3"
+LOCAL_BASE_DIR="faster-whisper-large-v3"
 REQUIRED_FILES=("config.json" "model.bin" "preprocessor_config.json" "README.md" "tokenizer.json" "vocabulary.json" )
 wget_required_list
 
 echo "Download faster-whisper-large-v3-turbo-ct2..."
 MODEL_REPO_URL="https://hf-mirror.com"
 MODEL_REPO_ID="deepdml/faster-whisper-large-v3-turbo-ct2"
-LOCAL_BASE_DIR="models/faster-whisper-large-v3-turbo-ct2"
+LOCAL_BASE_DIR="faster-whisper-large-v3-turbo-ct2"
 REQUIRED_FILES=("config.json" "model.bin" "preprocessor_config.json" "README.md" "tokenizer.json" "vocabulary.json" )
 wget_required_list
 
 echo "Download FireRedTTS..."
 MODEL_REPO_URL="https://hf-mirror.com"
 MODEL_REPO_ID="fireredteam/FireRedTTS"
-LOCAL_BASE_DIR="models/FireRedTTS"
+LOCAL_BASE_DIR="FireRedTTS"
 REQUIRED_FILES=("fireredtts_gpt.pt" "fireredtts_speaker.bin" "fireredtts_token2wav.pt" )
 wget_required_list
 
 echo "Download fishaudio/fish-speech-1.4..."
 MODEL_REPO_URL="https://hf-mirror.com"
 MODEL_REPO_ID="fishaudio/fish-speech-1.4"
-LOCAL_BASE_DIR="models/fish-speech-1_4"
+LOCAL_BASE_DIR="fish-speech-1_4"
 REQUIRED_FILES=("config.json" "firefly-gan-vq-fsq-8x1024-21hz-generator.pth" "model.pth" "special_tokens_map.json" \
  "tokenizer.json" "tokenizer_config.json" "README.md" )
 wget_required_list
@@ -86,7 +90,7 @@ wget_required_list
 echo "Download GPT-SoVITS V4..."
 MODEL_REPO_URL="https://hf-mirror.com"
 MODEL_REPO_ID="lj1995/GPT-SoVITS"
-LOCAL_BASE_DIR="models/gpt_sovits_v4"
+LOCAL_BASE_DIR="gpt_sovits_v4"
 REQUIRED_FILES=("chinese-hubert-base/config.json" "chinese-hubert-base/preprocessor_config.json" "chinese-hubert-base/pytorch_model.bin" \
  "chinese-roberta-wwm-ext-large/config.json" "chinese-roberta-wwm-ext-large/pytorch_model.bin" "chinese-roberta-wwm-ext-large/tokenizer.json" \
  "gsv-v2final-pretrained/s1bert25hz-5kh-longer-epoch=12-step=369668.ckpt" "gsv-v2final-pretrained/s2D2333k.pth" "gsv-v2final-pretrained/s2G2333k.pth" \
@@ -99,21 +103,21 @@ wget_required_list
 echo "Download Index-TTS-1.5..."
 MODEL_REPO_URL="https://hf-mirror.com"
 MODEL_REPO_ID="IndexTeam/IndexTTS-1.5"
-LOCAL_BASE_DIR="models/Index-TTS-1.5"
+LOCAL_BASE_DIR="Index-TTS-1.5"
 REQUIRED_FILES=("bigvgan_discriminator.pth" "bigvgan_generator.pth" "bpe.model" "config.yaml" "dvae.pth" "gpt.pth" "unigram_12000.vocab" "README" "README.md" )
 wget_required_list
 
 echo "Download OpenVoiceV2..."
 MODEL_REPO_URL="https://hf-mirror.com"
 MODEL_REPO_ID="myshell-ai/OpenVoiceV2"
-LOCAL_BASE_DIR="models/OpenVoiceV2"
+LOCAL_BASE_DIR="OpenVoiceV2"
 REQUIRED_FILES=("converter/checkpoint.pth" "converter/config.json" "README.md" )
 wget_required_list
 
 echo "Download SparkAudio/Spark-TTS-0.5B..."
 MODEL_REPO_URL="https://hf-mirror.com"
 MODEL_REPO_ID="SparkAudio/Spark-TTS-0.5B"
-LOCAL_BASE_DIR="models/Spark-TTS-0.5B"
+LOCAL_BASE_DIR="Spark-TTS-0.5B"
 REQUIRED_FILES=( "BiCodec/config.yaml" "BiCodec/model.safetensors" "config.yaml" "LLM/added_tokens.json" "LLM/config.json" "LLM/merges.txt" \
  "LLM/model.safetensors" "LLM/special_tokens_map.json" "LLM/tokenizer_config.json" "LLM/tokenizer.json" "LLM/vocab.json" "README.md" \
  "wav2vec2-large-xlsr-53/config.json" "wav2vec2-large-xlsr-53/preprocessor_config.json" "wav2vec2-large-xlsr-53/pytorch_model.bin" \
@@ -123,44 +127,44 @@ wget_required_list
 echo "Download vocos-mel-24khz..."
 MODEL_REPO_URL="https://hf-mirror.com"
 MODEL_REPO_ID="charactr/vocos-mel-24khz"
-LOCAL_BASE_DIR="models/vocos-mel-24khz"
+LOCAL_BASE_DIR="vocos-mel-24khz"
 REQUIRED_FILES=("config.yaml" "pytorch_model.bin" )
 wget_required_list
 
 echo "Download FunAudioLLM/SenseVoiceSmall..."
 MODEL_REPO_URL="https://hf-mirror.com"
 MODEL_REPO_ID="FunAudioLLM/SenseVoiceSmall"
-LOCAL_BASE_DIR="models/SenseVoiceSmall"
+LOCAL_BASE_DIR="SenseVoiceSmall"
 REQUIRED_FILES=("am.mvn" "chn_jpn_yue_eng_ko_spectok.bpe.model" "configuration.json" "config.yaml" "model.pt" "README.md" "README_zh.md" "tokens.json" )
 wget_required_list
 
 echo "Download funasr/fsmn-vad..."
 MODEL_REPO_URL="https://hf-mirror.com"
 MODEL_REPO_ID="funasr/fsmn-vad"
-LOCAL_BASE_DIR="models/fsmn-vad"
+LOCAL_BASE_DIR="fsmn-vad"
 REQUIRED_FILES=("am.mvn" "configuration.json" "config.yaml" "example/vad_example.wav" "fig/struct.png" "model.pt" "README.md" )
 wget_required_list
 
 echo "Download ResembleAI/resemble-enhance..."
 MODEL_REPO_URL="https://hf-mirror.com"
 MODEL_REPO_ID="ResembleAI/resemble-enhance"
-LOCAL_BASE_DIR="models/resemble-enhance"
+LOCAL_BASE_DIR="resemble-enhance"
 REQUIRED_FILES=("hparams.yaml" )
 wget_required_list
-wget -c ${REQUIRED_URL}/enhancer_stage2/ds/G/default/mp_rank_00_model_states.pt -O ${LOCAL_BASE_DIR}/mp_rank_00_model_states.pt
+wget -c ${REQUIRED_URL}/enhancer_stage2/ds/G/default/mp_rank_00_model_states.pt -O ${MOOD_ZOOM}/${LOCAL_BASE_DIR}/mp_rank_00_model_states.pt
 
 echo "Download fast_langdetect model..."
-wget -c https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.bin -O models/gpt_sovits_v4/fast_langdetect/lid.176.bin
+wget -c https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.bin -O ${MOOD_ZOOM}/gpt_sovits_v4/fast_langdetect/lid.176.bin
 
 echo "Download nltk_data model..."
 wget -c https://www.modelscope.cn/models/XXXXRT/GPT-SoVITS-Pretrained/resolve/master/nltk_data.zip -O /tmp/nltk_data.zip
-unzip -q -o /tmp/nltk_data.zip -d models/
+unzip -q -o /tmp/nltk_data.zip -d ${MOOD_ZOOM}/
 rm /tmp/nltk_data.zip
 
 :<<'REM'
 下面的目录可以不预先下载，等待容器首次启动运行后自动完成。
-models/tagger_cache/zh_tn_tagger.fst
-models/tagger_cache/zh_tn_verbalizer.fst
+${MOOD_ZOOM}/tagger_cache/zh_tn_tagger.fst
+${MOOD_ZOOM}/tagger_cache/zh_tn_verbalizer.fst
 
 用法：
 运行本脚本，会在当前目录下创建models目录，并开始下载几乎用到的所有模型文件。
