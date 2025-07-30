@@ -13,7 +13,7 @@ Spark-TTS-0.5B/{wav2vec2-large-xlsr-53,LLM,src/figures,src/logo,BiCodec},Denoise
 nltk_data/{taggers/{averaged_perceptron_tagger_eng,averaged_perceptron_tagger},corpora/cmudict},\
 ChatTTS/{asset/{tokenizer,gpt},config},vocos-mel-24khz,SenseVoiceSmall/{example,fig},fsmn-vad/{example,fig},\
 gpt_sovits_v4/{chinese-hubert-base,gsv-v2final-pretrained,fast_langdetect,gsv-v4-pretrained,\
-models--nvidia--bigvgan_v2_24khz_100band_256x,chinese-roberta-wwm-ext-large},v2Pro,sv}
+models--nvidia--bigvgan_v2_24khz_100band_256x,chinese-roberta-wwm-ext-large,v2Pro,sv}}
 }
 #下载指定列表
 wget_required_list(){
