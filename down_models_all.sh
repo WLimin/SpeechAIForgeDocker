@@ -3,7 +3,7 @@
 # 2025-07-30 14:18:42
 # 外部工具 wget unzip bash
 
-#要下载的模型保存位置，默认当前目录下
+#要下载的模型保存位置，默认当前目录下/models
 MOOD_ZOOM=$PWD/models
 
 mkdir_all(){
@@ -38,7 +38,9 @@ LOCAL_BASE_DIR="ChatTTS"
 REQUIRED_FILES=( "asset/DVAE.pt" "asset/DVAE_full.pt" "asset/Decoder.pt" "asset/GPT.pt" \
  "asset/Vocos.pt" "asset/spk_stat.pt" "asset/tokenizer.pt" "asset/tokenizer/special_tokens_map.json" \
  "asset/tokenizer/tokenizer.json" "asset/tokenizer/tokenizer_config.json" \
- "config/decoder.yaml" "config/dvae.yaml" "config/gpt.yaml" "config/path.yaml" "config/vocos.yaml" "README.md")
+ "config/decoder.yaml" "config/dvae.yaml" "config/gpt.yaml" "config/path.yaml" "config/vocos.yaml" \
+ "configuration.json" "asset/Vocos.safetensors" "asset/Embed.safetensors" "asset/Decoder.safetensors" \
+ "asset/DVAE.safetensors" "asset/gpt/model.safetensors" "asset/gpt/config.json" "README.md")
 wget_required_list "master"
 
 echo "Download CosyVoice2-0.5B..."
@@ -167,10 +169,10 @@ ${MOOD_ZOOM}/tagger_cache/zh_tn_tagger.fst
 ${MOOD_ZOOM}/tagger_cache/zh_tn_verbalizer.fst
 
 用法：
-运行本脚本，会在当前目录下创建models目录，并开始下载几乎用到的所有模型文件。
+运行本脚本，会在当前目录下创建models目录，并下载几乎用到的所有模型文件。
 确保空间够用。
 
-对于docker容器，挂在卷 models 到容器内 Speech-AI-Forge/models 目录。
+对于docker容器，挂载卷 models 到容器内 Speech-AI-Forge/models 目录: -v ${PWD}/models:/app/Speech-AI-Forge/models 。
 
 已知问题
 长时间使用 hf-mirror.com 会造成限速。本文件下载调用 wget 支持断点续传。

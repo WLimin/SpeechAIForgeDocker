@@ -11,9 +11,9 @@ LINK_MODELS=$"
     -v ${VOLUMES}/models/tagger_cache:/app/Speech-AI-Forge/modules/repos_static/index_tts/indextts/utils/tagger_cache \
 "
 
-GIT_TAG=v0.7.0-391-g4cd5ba8
-GIT_COMMIT=4cd5ba879603467ccf6b5e8d9b4c1f74fede2976
-GIT_BRANCH=main
+GIT_TAG='v0.7.0-391-g4cd5ba8'
+GIT_COMMIT='4cd5ba879603467ccf6b5e8d9b4c1f74fede2976'
+GIT_BRANCH='main'
 
 # 宿主机是否有 nvidia GPU
 which nvidia-smi
@@ -50,8 +50,8 @@ cli_common() {
         CAPABILITIES=api
         docker run -itd $RUN_USE_GPU \
             --network=${DOCKER_NET} \
-            -p 7860:7860 -p 7870:7870\
-            -v ${VOLUMES}/models:/app/Speech-AI-Forge/models\
+            -p 7860:7860 -p 7870:7870 \
+            -v ${VOLUMES}/models:/app/Speech-AI-Forge/models \
             --user $(id -u):$(id -g) \
             -e CAPABILITIES=${CAPABILITIES} \
             -e NLTK_DATA="/app/Speech-AI-Forge/models/nltk_data" \
