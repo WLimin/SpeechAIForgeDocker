@@ -38,7 +38,9 @@ LOCAL_BASE_DIR="ChatTTS"
 REQUIRED_FILES=( "asset/DVAE.pt" "asset/DVAE_full.pt" "asset/Decoder.pt" "asset/GPT.pt" \
  "asset/Vocos.pt" "asset/spk_stat.pt" "asset/tokenizer.pt" "asset/tokenizer/special_tokens_map.json" \
  "asset/tokenizer/tokenizer.json" "asset/tokenizer/tokenizer_config.json" \
- "config/decoder.yaml" "config/dvae.yaml" "config/gpt.yaml" "config/path.yaml" "config/vocos.yaml" "README.md")
+ "config/decoder.yaml" "config/dvae.yaml" "config/gpt.yaml" "config/path.yaml" "config/vocos.yaml" \
+ "configuration.json" "asset/Vocos.safetensors" "asset/Embed.safetensors" "asset/Decoder.safetensors" \
+ "asset/DVAE.safetensors" "asset/gpt/model.safetensors" "asset/gpt/config.json" "README.md")
 wget_required_list "master"
 
 echo "Download CosyVoice2-0.5B..."
