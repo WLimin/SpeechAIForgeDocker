@@ -38,11 +38,14 @@ Traceback (most recent call last):
     raise RuntimeError("Cannot add middleware after an application has started")
 RuntimeError: Cannot add middleware after an application has started
 不可思议的错误。我也不会调整fastapi执行顺序，将middlewar编排在app运行之前。注释。
+问题原因及对策：
+gradio.block.lunch()会调用route.App(FASTAPI)生成实例，设置add_middleware开始运行app。
+必须采用运行时更改CORS的策略，在app.user_middleware里插入，并设置参数。借用starlette.CORSMiddleware更快速。
 
 另外，webui.py --api启动的服务仍然在gui的7860端口。
 REM_B1
 
-sed -i -e '/@self.app.middleware("http")/s/^/# /' /app/Speech-AI-Forge/modules/api/Api.py
+patch -Np1 /app/Speech-AI-Forge/modules/api/api_setup.py </app/docker/patch_api_setup.patch
 
 :<<'REM_B2'
 

@@ -1,0 +1,31 @@
+diff -u old/api_setup.py new/api_setup.py
+--- old/api_setup.py	2025-08-02 17:06:04.214386003 +0800
++++ new/api_setup.py	2025-08-02 17:04:03.416317171 +0800
+@@ -84,7 +84,7 @@
+     config.api = api
+ 
+     if cors_origin:
+-        api.set_cors(allow_origins=[cors_origin])
++        configure_cors_middleware(app, cors_origin)
+         logger.info(f"allow CORS origin: {cors_origin}")
+ 
+     if not no_playground:
+@@ -93,3 +93,18 @@
+     threading.excepthook = lambda exctype: logger.exception(
+         "Uncaught exception", exc_info=(exctype)
+     )
++
++import starlette
++def configure_cors_middleware(app: FastAPI, cors_origin: str):
++    from starlette.middleware.cors import CORSMiddleware
++
++    cors_options = {
++        "allow_methods": ["*"],
++        "allow_headers": ["*"],
++        "allow_credentials": True,
++    }
++    cors_options["allow_origins"] = cors_origin.split(',')
++
++    app.user_middleware.insert(0, starlette.middleware.Middleware(CORSMiddleware, **cors_options))
++    app.build_middleware_stack()  # rebuild middleware stack on-the-fly
++
