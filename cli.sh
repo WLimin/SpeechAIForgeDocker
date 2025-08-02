@@ -15,7 +15,7 @@ source ${SHELL_FOLDER}/common.sh
 # 传递给容器的默认命令行
 CMD_ARG=
 if [ $NV_GPU -eq 0 ]; then #没有gpu支持
-    CMD_ARG="${CMD_ARG} --use_cpu all --no_half "
+    CMD_ARG=
 fi
 
 cli_common
