@@ -29,12 +29,9 @@ sed -i -e 's/"git_commit": /"git_commit": os.environ.get("V_GIT_COMMIT") or /g' 
     torch._C._cuda_init()
 RuntimeError: Found no NVIDIA driver on your system. Please check that you have an NVIDIA GPU and installed a driver from http://www.nvidia.com/Download/index.aspx
 
-2025-08-06 14:07:44 计划修改webui/system_tab.py
-
-sed -i -e '/torch.cuda.get_device_properties(0).total_memory/s/$/ if torch.cuda.is_available() else 0/' /app/Speech-AI-Forge/modules/devices/devices.py
-sed -i -e '/torch.cuda.memory_reserved(0)/s/$/ if torch.cuda.is_available() else 0/' /app/Speech-AI-Forge/modules/devices/devices.py
-sed -i -e '/torch.cuda.memory_allocated(0/s/$/ if torch.cuda.is_available() else 0/' /app/Speech-AI-Forge/modules/devices/devices.py
 REM_B3
+#line 15
+sed -i -e '/gpu_mem = devices.get_gpu_memory()/s/$/ if devices.torch.cuda.is_available() else devices.MemUsage(devices.device, 0, 0, 0)/' /app/Speech-AI-Forge/modules/webui/system_tab.py
 
 :<<'REM_B4'
  modules.core.models.tts.FireRed.FireRedTTSModel - INFO - loadding FireRedTTS...
@@ -50,5 +47,5 @@ REM_B4
 
 sed -i -e 's/\(model.load_state_dict(torch.load(ckpt_path\)\(), strict=True)\)/\1, map_location=torch.device(device)\2/g' /app/Speech-AI-Forge/modules/repos_static/FireRedTTS/fireredtts/modules/codec/speaker.py
 # force use the dark theme, why?
-sed -i -e '/const url = new URL(window.location);/s/^/#/' /app/Speech-AI-Forge/modules/webui/app.py
+sed -i -e 's#js=js_func, ##g' /app/Speech-AI-Forge/modules/webui/app.py
 echo "done."
