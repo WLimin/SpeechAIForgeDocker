@@ -3,8 +3,9 @@
 echo "Apply some source file patch..."
 # AttributeError: module 'torch.serialization' has no attribute 'FILE_LIKE'
 sed -i -e 's/FILE_LIKE/FileLike/g' /app/Speech-AI-Forge/modules/repos_static/ChatTTS/ChatTTS/core.py /app/Speech-AI-Forge/modules/repos_static/ChatTTS/ChatTTS/model/tokenizer.py
-# CosyVoiceModel change to cosyvoice2.yaml
-sed -i -e 's/cosyvoice.yaml/cosyvoice2.yaml/g' /app/Speech-AI-Forge/modules/core/models/tts/CosyVoiceModel.py
+
+# CosyVoiceModel change to cosyvoice2.yaml 2025-08-06 14:07:44 已合并入上游。
+# sed -i -e 's/cosyvoice.yaml/cosyvoice2.yaml/g' /app/Speech-AI-Forge/modules/core/models/tts/CosyVoiceModel.py
 # robust_downloader.downloader - INFO - Downloading https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.bin to lid.176.bin (125.2M)
 sed -i -e 's#cache_dir=.*fast_langdetect"#cache_dir="models/gpt_sovits_v4/fast_langdetect"#g' /app/Speech-AI-Forge/modules/repos_static/GPT_SoVITS/GPT_SoVITS/text/LangSegmenter/langsegmenter.py
 # I don't like this error: fatal: not a git repository (or any of the parent directories): .git
@@ -43,18 +44,19 @@ gradio.block.lunch()会调用route.App(FASTAPI)生成实例，设置add_middlewa
 必须采用运行时更改CORS的策略，在app.user_middleware里插入，并设置参数。借用starlette.CORSMiddleware更快速。
 
 另外，webui.py --api启动的服务仍然在gui的7860端口。
-REM_B1
-
+2025-08-06 14:07:44 已合并入上游。
 patch -Np1 /app/Speech-AI-Forge/modules/api/api_setup.py </app/docker/patch_api_setup.patch
+REM_B1
 
 :<<'REM_B2'
 
   File "/app/Speech-AI-Forge/modules/core/pipeline/factory.py", line 134, in create
     raise Exception(f"Unknown model id: {model_id}")
 Exception: Unknown model id: fireredtts
-REM_B2
 
+2025-08-06 14:07:44 已合并入上游。
 sed -i -e  's/elif model_id == "firered"/elif model_id == "fireredtts"/g' /app/Speech-AI-Forge/modules/core/pipeline/factory.py
+REM_B2
 
 :<<'REM_B3'
   File "/app/Speech-AI-Forge/modules/devices/devices.py", line 204, in get_gpu_memory
@@ -67,11 +69,12 @@ sed -i -e  's/elif model_id == "firered"/elif model_id == "fireredtts"/g' /app/S
     torch._C._cuda_init()
 RuntimeError: Found no NVIDIA driver on your system. Please check that you have an NVIDIA GPU and installed a driver from http://www.nvidia.com/Download/index.aspx
 
-REM_B3
+2025-08-06 14:07:44 计划修改webui/system_tab.py
 
 sed -i -e '/torch.cuda.get_device_properties(0).total_memory/s/$/ if torch.cuda.is_available() else 0/' /app/Speech-AI-Forge/modules/devices/devices.py
 sed -i -e '/torch.cuda.memory_reserved(0)/s/$/ if torch.cuda.is_available() else 0/' /app/Speech-AI-Forge/modules/devices/devices.py
 sed -i -e '/torch.cuda.memory_allocated(0/s/$/ if torch.cuda.is_available() else 0/' /app/Speech-AI-Forge/modules/devices/devices.py
+REM_B3
 
 :<<'REM_B4'
  modules.core.models.tts.FireRed.FireRedTTSModel - INFO - loadding FireRedTTS...
