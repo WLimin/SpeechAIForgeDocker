@@ -4,8 +4,8 @@
 #set -x
 # 设置默认值
 FORMAT="txt"
-PRESET_LANG=""
-MODEL="whisper.turbo"
+PRESET_LANG="zh"
+MODEL="sensevoice"
 HOST="http://localhost:7860"
 
 HELP(){
@@ -104,8 +104,8 @@ CheckURL
 
 # 使用curl上传音频文件并获取转写结果
 URL="${HOST}/v1/audio/transcriptions"
-echo  "文件 '${AUDIO_FILE}' 将被提交到 '${URL}' 转写为 '${FORMAT}' 格式。"
-echo "请等待……"
+echo "文件 '${AUDIO_FILE}' 将被提交到 '${URL}' 转写为 '${FORMAT}' 格式。"
+echo -n "请等待……"
 # 设置整个 curl 命令的参数为数组，每个参数独立存放
 declare -a headers=(
     '-H' 'accept: application/json'     # 包含特殊字符*，用单引号包裹
@@ -160,5 +160,7 @@ curl -X 'POST' \
   -F 'prompt=' -F 'response_format=srt' \
   -F 'temperature=0' -F 'timestamp_granularities=segment' | jq -r '.text' >台湾女.srt
 
+# 将目录下的播客语音文件转写文本
+for a in 纵横四海/*.m4a ; do echo $a; time ./SpeechAIForgeDocker/trans.sh -f txt -m sensevoice -l zh "$a"; echo 'done.'; done
 REM
 exit 0
