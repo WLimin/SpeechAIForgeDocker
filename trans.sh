@@ -55,8 +55,9 @@ elif [ ! -f "$AUDIO_FILE" ]; then
 fi
 
 # 根据音频文件扩展名设置Content-Type
-case "${AUDIO_FILE##*.}" in
-    mp3) TYPE="audio/mpeg";;
+EXT="${AUDIO_FILE##*.}"
+case  ${EXT,,} in   # Bash 4.0属以上内置${string,,} 转小写和 ${string^^}转大写
+    mp3|m4a|mp4) TYPE="audio/mpeg";;
     wav) TYPE="audio/x-wav";;
     ogg) TYPE="audio/ogg";;
     acc) TYPE="audio/aac";;

@@ -11,8 +11,8 @@ LINK_MODELS=$"
     -v ${VOLUMES}/models/tagger_cache:/app/Speech-AI-Forge/modules/repos_static/index_tts/indextts/utils/tagger_cache \
 "
 
-GIT_TAG='v0.7.0-391-g4cd5ba8'
-GIT_COMMIT='4cd5ba879603467ccf6b5e8d9b4c1f74fede2976'
+GIT_TAG='v0.7.0-396-g2a53ba0'
+GIT_COMMIT='2a53ba042514fc4727577158fb274ed88196e27a'
 GIT_BRANCH='main'
 
 # 宿主机是否有 nvidia GPU
