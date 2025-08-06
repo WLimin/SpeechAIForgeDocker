@@ -86,5 +86,6 @@ RuntimeError: Attempting to deserialize object on a CUDA device but torch.cuda.i
 REM_B4
 
 sed -i -e 's/\(model.load_state_dict(torch.load(ckpt_path\)\(), strict=True)\)/\1, map_location=torch.device(device)\2/g' /app/Speech-AI-Forge/modules/repos_static/FireRedTTS/fireredtts/modules/codec/speaker.py
-
+# force use the dark theme, why?
+sed -i -e '/const url = new URL(window.location);/s/^/#/' /app/Speech-AI-Forge/modules/webui/app.py
 echo "done."
