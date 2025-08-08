@@ -105,7 +105,7 @@ CheckURL
 # 使用curl上传音频文件并获取转写结果
 URL="${HOST}/v1/audio/transcriptions"
 echo "文件 '${AUDIO_FILE}' 将被提交到 '${URL}' 转写为 '${FORMAT}' 格式。"
-echo -n "请等待……"
+echo -n "请等待…… "
 # 设置整个 curl 命令的参数为数组，每个参数独立存放
 declare -a headers=(
     '-H' 'accept: application/json'     # 包含特殊字符*，用单引号包裹
@@ -121,20 +121,21 @@ declare -a headers=(
 
 # 上传音频文件并获取转写结果
 RESPONSE=$(curl --silent -X 'POST' "$URL" "${headers[@]}" )
-# 输出或处理转写结果
-if [ $? -eq 0 ]; then
-    RESPONSE=$(echo "$RESPONSE" | jq -r '.text')
+if [ $? -eq 0 ]; then # 输出或处理转写结果
+    RESPONSE_JQ_TXT=$(echo "$RESPONSE" | jq -r '.text')
+    # 去掉扩展名并添加新的格式
+    NEW_FILE="${AUDIO_FILE%.*}.$FORMAT"
+    # 将转写结果保存为指定格式的文件
+    echo "Saving transcription to '$NEW_FILE'."
+    if [ "is$RESPONSE_JQ_TXT" != "isnull" ]; then
+        echo "$RESPONSE_JQ_TXT" > "$NEW_FILE"
+    else    # 应该是发生错误或例外了。
+        echo "$RESPONSE" > "${NEW_FILE}.raw"
+    fi
 else
     echo "Response from server:"
     echo "$RESPONSE"
     exit 2
-fi
-# 将转写结果保存为指定格式的文件
-if [ ! -z "$FORMAT" ]; then
-    # 去掉扩展名并添加新的格式
-    NEW_FILE="${AUDIO_FILE%.*}.$FORMAT"
-    echo "Saving transcription to '$NEW_FILE'."
-    echo "$RESPONSE" > "$NEW_FILE"
 fi
 
 :<<'REM'
@@ -161,6 +162,6 @@ curl -X 'POST' \
   -F 'temperature=0' -F 'timestamp_granularities=segment' | jq -r '.text' >台湾女.srt
 
 # 将目录下的播客语音文件转写文本
-for a in 纵横四海/*.m4a ; do echo $a; time ./SpeechAIForgeDocker/trans.sh -f txt -m sensevoice -l zh "$a"; echo 'done.'; done
+date; for a in *.m4a ; do echo $a; time ./SpeechAIForgeDocker/trans.sh -f txt -m sensevoice -l zh "$a"; echo 'done.'; done; date
 REM
 exit 0
