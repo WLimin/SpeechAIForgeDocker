@@ -5,11 +5,14 @@
 # DOCKER_NET
 # LINK_MODELS
 # CMD_ARG
+# EXTEND_ENV
 
 # 重复利用其它项目已经下载的模型，可以全部移动到${VOLUMES}/models目录下。若不需要，设置为空
 LINK_MODELS=$"
     -v ${VOLUMES}/models/tagger_cache:/app/Speech-AI-Forge/modules/repos_static/index_tts/indextts/utils/tagger_cache \
 "
+#额外的容器变量
+EXTEND_ENV=''
 
 GIT_TAG='v0.7.0-396-g2a53ba0'
 GIT_COMMIT='2a53ba042514fc4727577158fb274ed88196e27a'
@@ -56,6 +59,7 @@ cli_common() {
             -e CAPABILITIES=${CAPABILITIES} \
             -e NLTK_DATA="/app/Speech-AI-Forge/models/nltk_data" \
             -e V_GIT_TAG="$GIT_TAG" -e V_GIT_COMMIT="$GIT_COMMIT" -e V_GIT_BRANCH="$GIT_BRANCH" \
+            $EXTEND_ENV \
             $LINK_MODELS \
          chat-tts-forge $CMD_ARG
     fi

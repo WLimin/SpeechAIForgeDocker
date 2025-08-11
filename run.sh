@@ -13,10 +13,13 @@ DOCKER_NET=openwebui-net
 source ${SHELL_FOLDER}/common.sh
 
 # 传递给容器的默认命令行
-CMD_ARG="python3 webui.py --api --webui_experimental --off_track_tqdm"
+CMD_ARG="python3 webui.py --api --webui_experimental"
 if [ $NV_GPU -eq 0 ]; then #没有gpu支持
     CMD_ARG="${CMD_ARG} --use_cpu all --no_half"
 fi
+
+#额外的容器变量
+EXTEND_ENV='-e LOG_LEVEL=ERROR'
 
 cli_common
 docker logs -f $CONTAINER_NAME
