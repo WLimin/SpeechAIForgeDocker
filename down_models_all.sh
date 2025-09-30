@@ -13,7 +13,8 @@ Spark-TTS-0.5B/{wav2vec2-large-xlsr-53,LLM,src/figures,src/logo,BiCodec},Denoise
 nltk_data/{taggers/{averaged_perceptron_tagger_eng,averaged_perceptron_tagger},corpora/cmudict},\
 ChatTTS/{asset/{tokenizer,gpt},config},vocos-mel-24khz,SenseVoiceSmall/{example,fig},fsmn-vad/{example,fig},\
 gpt_sovits_v4/{chinese-hubert-base,gsv-v2final-pretrained,fast_langdetect,gsv-v4-pretrained,\
-models--nvidia--bigvgan_v2_24khz_100band_256x,chinese-roberta-wwm-ext-large,v2Pro,sv}}
+models--nvidia--bigvgan_v2_24khz_100band_256x,chinese-roberta-wwm-ext-large,v2Pro,sv},\
+Index-TTS-2/qwen0.6bemo4-merge,amphion/MaskGCT/semantic_codec,nvidia/bigvgan_v2_22khz_80band_256x,funasr/campplus,facebook/w2v-bert-2.0}
 }
 #下载指定列表
 wget_required_list(){
@@ -109,6 +110,15 @@ LOCAL_BASE_DIR="Index-TTS-1.5"
 REQUIRED_FILES=("bigvgan_discriminator.pth" "bigvgan_generator.pth" "bpe.model" "config.yaml" "dvae.pth" "gpt.pth" "unigram_12000.vocab" "README" "README.md" )
 wget_required_list
 
+echo "Download Index-TTS-2..."
+MODEL_REPO_URL="https://hf-mirror.com"
+MODEL_REPO_ID="IndexTeam/IndexTTS-2"
+LOCAL_BASE_DIR="Index-TTS-2"
+REQUIRED_FILES=("gpt.pth" "s2mel.pth" "qwen0.6bemo4-merge/model.safetensors" ".gitattributes" "README.md" "bpe.model" "config.yaml" "feat1.pt" "feat2.pt" "wav2vec2bert_stats.pt" \
+"qwen0.6bemo4-merge/Modelfile" "qwen0.6bemo4-merge/added_tokens.json" "qwen0.6bemo4-merge/chat_template.jinja" "qwen0.6bemo4-merge/config.json" "qwen0.6bemo4-merge/generation_config.json" \
+"qwen0.6bemo4-merge/merges.txt" "qwen0.6bemo4-merge/special_tokens_map.json" "qwen0.6bemo4-merge/tokenizer.json" "qwen0.6bemo4-merge/tokenizer_config.json" "qwen0.6bemo4-merge/vocab.json" )
+wget_required_list
+
 echo "Download OpenVoiceV2..."
 MODEL_REPO_URL="https://hf-mirror.com"
 MODEL_REPO_ID="myshell-ai/OpenVoiceV2"
@@ -162,6 +172,34 @@ echo "Download nltk_data model..."
 wget -c https://www.modelscope.cn/models/XXXXRT/GPT-SoVITS-Pretrained/resolve/master/nltk_data.zip -O /tmp/nltk_data.zip
 unzip -q -o /tmp/nltk_data.zip -d ${MOOD_ZOOM}/
 rm /tmp/nltk_data.zip
+
+echo "Download amphion/MaskGCT..."
+MODEL_REPO_URL="https://hf-mirror.com"
+MODEL_REPO_ID="amphion/MaskGCT"
+LOCAL_BASE_DIR="amphion/MaskGCT"
+REQUIRED_FILES=("semantic_codec/model.safetensors" )
+wget_required_list
+
+echo "Download nvidia/bigvgan_v2_22khz_80band_256x..."
+MODEL_REPO_URL="https://hf-mirror.com"
+MODEL_REPO_ID="nvidia/bigvgan_v2_22khz_80band_256x"
+LOCAL_BASE_DIR="nvidia/bigvgan_v2_22khz_80band_256x"
+REQUIRED_FILES=("configuration.json" "config.json" "bigvgan_generator.pt" )
+wget_required_list
+
+echo "Download funasr/campplus..."
+MODEL_REPO_URL="https://hf-mirror.com"
+MODEL_REPO_ID="funasr/campplus"
+LOCAL_BASE_DIR="funasr/campplus"
+REQUIRED_FILES=("campplus_cn_common.bin" )
+wget_required_list
+
+echo "Download facebook/w2v-bert-2.0..."
+MODEL_REPO_URL="https://hf-mirror.com"
+MODEL_REPO_ID="facebook/w2v-bert-2.0"
+LOCAL_BASE_DIR="facebook/w2v-bert-2.0"
+REQUIRED_FILES=("preprocessor_config.json" "config.json" "model.safetensors" )
+wget_required_list
 
 :<<'REM'
 下面的目录可以不预先下载，等待容器首次启动运行后自动完成。

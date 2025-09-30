@@ -14,8 +14,8 @@ LINK_MODELS=$"
 #额外的容器变量
 EXTEND_ENV=''
 
-GIT_TAG='v0.7.0-397-gfc833e5'
-GIT_COMMIT='fc833e557eb4fb393716206c38c8d5879eb5e7f3'
+GIT_TAG='v0.7.0-404-gadb747d'
+GIT_COMMIT='adb747dad7e3d10330931c01eda6b3694427ea70'
 GIT_BRANCH='main'
 
 # 宿主机是否有 nvidia GPU
