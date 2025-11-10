@@ -48,4 +48,43 @@ REM_B4
 sed -i -e 's/\(model.load_state_dict(torch.load(ckpt_path\)\(), strict=True)\)/\1, map_location=torch.device(device)\2/g' /app/Speech-AI-Forge/modules/repos_static/FireRedTTS/fireredtts/modules/codec/speaker.py
 # force use the dark theme, why?
 sed -i -e 's#js=js_func, ##g' /app/Speech-AI-Forge/modules/webui/app.py
+
+:<<'REM_B5'
+transformers==4.52.1
+执行ChatTTS:
+```
+  File "/app/Speech-AI-Forge/modules/repos_static/ChatTTS/ChatTTS/model/gpt.py", line 288, in _prepare_generation_inputs
+    max_cache_length = past_key_values.get_max_length()
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'DynamicCache' object has no attribute 'get_max_length'
+```
+transformers==4.48.3 执行ChatTTS正常，不出错。但是，执行IndexTTS-V2，出现错误：
+```
+Loading config.json from local directory
+Loading weights from local directory
+Traceback (most recent call last):
+  File "/opt/conda/lib/python3.11/site-packages/transformers/models/auto/configuration_auto.py", line 1034, in from_pretrained
+    config_class = CONFIG_MAPPING[config_dict["model_type"]]
+                   ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/lib/python3.11/site-packages/transformers/models/auto/configuration_auto.py", line 736, in __getitem__
+    raise KeyError(key)
+KeyError: 'qwen3'
+
+During handling of the above exception, another exception occurred:
+....
+ File "/app/Speech-AI-Forge/modules/core/models/tts/IndexTTS/infer/infer_v2.py", line 782, in __init__
+    self.model = AutoModelForCausalLM.from_pretrained(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/lib/python3.11/site-packages/modelscope/utils/hf_util.py", line 278, in from_pretrained
+    module_obj = module_class.from_pretrained(model_dir, *model_args,
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/lib/python3.11/site-packages/transformers/models/auto/auto_factory.py", line 526, in from_pretrained
+    config, kwargs = AutoConfig.from_pretrained(
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/lib/python3.11/site-packages/transformers/models/auto/configuration_auto.py", line 1036, in from_pretrained
+    raise ValueError(
+ValueError: The checkpoint you are trying to load has model type `qwen3` but Transformers does not recognize this architecture. This could be because of an issue with the checkpoint, or because your version of Transformers is out of date.
+```
+REM_B5
+sed -i -e "s/\(max_cache_length = past_key_values.get_max_length()\)/\1 if hasattr(past_key_values, 'get_max_length') else past_key_values.get_seq_length() # 检查是否具有 'get_seq_length' 属性(transformers_version>4.80)/g" /app/Speech-AI-Forge/modules/repos_static/ChatTTS/ChatTTS/model/gpt.py
 echo "done."
