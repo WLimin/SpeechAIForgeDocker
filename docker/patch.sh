@@ -87,4 +87,21 @@ ValueError: The checkpoint you are trying to load has model type `qwen3` but Tra
 ```
 REM_B5
 sed -i -e "s/\(max_cache_length = past_key_values.get_max_length()\)/\1 if hasattr(past_key_values, 'get_max_length') else past_key_values.get_seq_length() # 检查是否具有 'get_seq_length' 属性(transformers_version>4.80)/g" /app/Speech-AI-Forge/modules/repos_static/ChatTTS/ChatTTS/model/gpt.py
+
+:<<'REM_B6'
+反向代理问题
+/docs, /redoc绝对路径造成反向代理问题。添加环境变量GRADIO_ROOT_PATH。涉及文件Speech-AI-Forge/:
+./modules/webui/app.py:59:        footer_items.append(f"[api](/docs)")
+
+GRADIO_ROOT_PATH='/abc' python3 -c "import os;print(f\"[api]({os.environ.get('GRADIO_ROOT_PATH', '')}/docs)\")"
+
+下列文件因为属于gradio附属函数，会被正确处理环境变量。
+./modules/api/worker.py:40:    docs_url=None if config.runtime_env_vars.no_docs else "/docs",
+./webui.py:143:                else None if config.runtime_env_vars.no_docs else "/docs"
+
+./modules/api/worker.py:39:    redoc_url=None if config.runtime_env_vars.no_docs else "/redoc",
+./webui.py:138:                else None if config.runtime_env_vars.no_docs else "/redoc"
+
+REM_B6
+sed -i -e "s#\(footer_items.append(f\"\[api\](\)\(/docs)\")\)#\1{os.environ.get('GRADIO_ROOT_PATH', '')}\2#g" /app/Speech-AI-Forge/modules/webui/app.py
 echo "done."
