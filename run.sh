@@ -28,8 +28,14 @@ docker logs -f $CONTAINER_NAME
 # python3 webui.py --api
 # 返回模型列表
 curl -X 'GET' 'http://adeb.local:7860/v1/models/list' -H 'accept: application/json'
+curl -X 'GET' 'https://adeb.local/speechforge/v1/models/list' -H 'accept: application/json' -k
 
 {"message":"ok","data":["chat-tts","fish-speech","cosy-voice","fire-red-tts","f5-tts","index-tts","spark-tts","gpt-sovits-v1","gpt-sovits-v2","gpt-sovits-v3","gpt-sovits-v4","resemble-enhance","whisper.large","whisper.turbo","sensevoice","open-voice"]}
+
+# 返回说话人列表
+curl -X 'GET' 'https://adeb.local/speechforge/v1/speakers/list?detailed=false&offset=0&limit=-1' -H 'accept: application/json' -k |jq -r '.data.items[].data.meta.data|.gender+":"+.name'|sort
+
+...
 
 # OpenAI 兼容合成语音
 
@@ -48,5 +54,25 @@ curl -X 'POST' \
   -F 'prompt=' -F 'response_format=srt' \
   -F 'temperature=0' -F 'timestamp_granularities=segment' | jq -r '.text' >台湾女.srt
 
-
+# Open WebUI
+引擎：http://chat-tts-forge-webui:7860/v1
+音色（根据需要）：音色有韵味带磁性
+文本转语音模型：chat-tts
+额外参数：
+{
+  "response_format": "mp3",
+  "speed": 1,
+  "seed": 42,
+  "temperature": 0.3,
+  "top_k": 20,
+  "top_p": 0.7,
+  "style": "",
+  "batch_size": 1,
+  "spliter_threshold": 100,
+  "eos": "[uv_break]",
+  "enhance": false,
+  "denoise": false,
+  "stream": false,
+  "bitrate": "64k"
+}
 EOF
