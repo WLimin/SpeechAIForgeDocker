@@ -10,8 +10,8 @@
 
 # 重复利用其它项目已经下载的模型，可以全部移动到${VOLUMES}/models目录下。若不需要，设置为空
 LINK_MODELS=$"
-    -v ${VOLUMES}/models/tagger_cache:/app/Speech-AI-Forge/modules/repos_static/index_tts/indextts/utils/tagger_cache \
-"
+   -v ${VOLUMES}/models/tagger_cache:/app/Speech-AI-Forge/modules/repos_static/index_tts/indextts/utils/tagger_cache \
+   -v ${VOLUMES}/Speech-AI-Forge-spks/spks:/app/Speech-AI-Forge/data/speakers/github-spks"
 #额外的容器变量
 EXTEND_ENV=''
 GRADIO_ROOT_PATH_ENV=/speechforge

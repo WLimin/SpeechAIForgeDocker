@@ -89,7 +89,7 @@ REM_B5
 sed -i -e "s/\(max_cache_length = past_key_values.get_max_length()\)/\1 if hasattr(past_key_values, 'get_max_length') else past_key_values.get_seq_length() # 检查是否具有 'get_seq_length' 属性(transformers_version>4.80)/g" /app/Speech-AI-Forge/modules/repos_static/ChatTTS/ChatTTS/model/gpt.py
 
 :<<'REM_B6'
-反向代理问题
+1.反向代理问题
 /docs, /redoc绝对路径造成反向代理问题。添加环境变量GRADIO_ROOT_PATH。涉及文件Speech-AI-Forge/:
 ./modules/webui/app.py:59:        footer_items.append(f"[api](/docs)")
 
@@ -102,6 +102,29 @@ GRADIO_ROOT_PATH='/abc' python3 -c "import os;print(f\"[api]({os.environ.get('GR
 ./modules/api/worker.py:39:    redoc_url=None if config.runtime_env_vars.no_docs else "/redoc",
 ./webui.py:138:                else None if config.runtime_env_vars.no_docs else "/redoc"
 
+2.不支持的gpt-sovits-v1/v2/v3
+查找 GptSoVitsTTS.py 代码，发现v1/v2不支持。参考README.MD说法，只支持v4。因此，删除model_zoo.get_tts_model_ids()中的gpt-sovits-v1/v2/v3
+
+3.GUI的音色/试音卡中，上传音色文件，如 lenML/Speech-AI-Forge-spks/spks/fishspeech_community/fs_大四女生.spkv1.json，点任意试音按钮，提示出错。在TTS页面正常。
+TypeError: tts_generate() got an unexpected keyword argument 'spk_emotion'
+修改speaker_editor.py 33行的
+spk_emotion=spk_emotion,
+改为
+spk_emotion2=spk_emotion,
+
+4.transformers==4.52版本兼容问题
+  File "/app/Speech-AI-Forge/modules/repos_static/FireRedTTS/fireredtts/modules/gpt/gpt.py", line 346, in generate
+    gen = self.gpt_inference.generate(
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1940, in __getattr__
+    raise AttributeError(
+AttributeError: 'GPT2InferenceModel' object has no attribute 'generate'
+
 REM_B6
+#fix_err1:增加'GRADIO_ROOT_PATH'环境变量支持
 sed -i -e "s#\(footer_items.append(f\"\[api\](\)\(/docs)\")\)#\1{os.environ.get('GRADIO_ROOT_PATH', '')}\2#g" /app/Speech-AI-Forge/modules/webui/app.py
+#fix_err2:删除定义函数的两行和空白行，以及字典中的kv
+sed -i -e  '/def get_gpt_sovits_v[1|2|3]/{N;N;d}' -e '/"gpt-sovits-v[1|2|3]"/d' /app/Speech-AI-Forge/modules/core/models/zoo/ModelZoo.py
+#fix_err3:替换第一个spk_emotion=spk_emotion
+sed -i '0,/spk_emotion=spk_emotion,/s//spk_emotion2=spk_emotion,/' /app/Speech-AI-Forge/modules/webui/speaker/speaker_editor.py
 echo "done."

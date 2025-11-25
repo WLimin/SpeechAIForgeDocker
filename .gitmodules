@@ -1,3 +1,6 @@
 [submodule "Speech-AI-Forge"]
 	path = Speech-AI-Forge
 	url = https://github.com/lenML/Speech-AI-Forge.git
+[submodule "Speech-AI-Forge-spks"]
+	path = Speech-AI-Forge-spks
+	url = https://github.com/lenML/Speech-AI-Forge-spks
