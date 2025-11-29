@@ -20,6 +20,7 @@ fi
 
 #额外的容器变量
 EXTEND_ENV='-e LOG_LEVEL=ERROR'
+#EXTEND_ENV='-e LOG_LEVEL=DEBUG'
 
 cli_common
 docker logs -f $CONTAINER_NAME
