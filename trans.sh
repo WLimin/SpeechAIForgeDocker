@@ -1,13 +1,15 @@
 #!/bin/bash
 
 # 将录音文件转写为文本
+# FIXED:已知问题：文件名中不能含有,
 #set -x
 # 设置默认值
 FORMAT="txt"
 PRESET_LANG="zh"
 MODEL="sensevoice"
-HOST="http://localhost:7860"
-
+HOST="https://$(hostname).local/speechforge"
+DEBUG=true
+date
 HELP(){
     echo  "将录音文件转写为文本的脚本。"
     echo  "用法：$(basename \"${BASH_SOURCE[0]}\") [-f format] [-l language] [-m model] [-h host:port] audio_file"
@@ -22,10 +24,13 @@ HELP(){
 # 使用 URL_CHECK 检查HOST是否正常
 CheckURL(){
     URL_CHECK="${HOST}/v1/ping"
-    RESPONSE=$(curl --silent -H 'accept: application/json' -X 'GET' $URL_CHECK | jq '.data')
+    echo -n "使用 $URL_CHECK 检查HOST 转写服务……"
+    RESPONSE=$(curl --silent -k -H 'accept: application/json' -X 'GET' $URL_CHECK | jq '.data')
     if [ "Ok$RESPONSE" !=  'Ok"pong"' ]; then
-        echo "Invalid response. 请检查 $URL_CHECK 是否正确。"
+        echo -e "Invalid response: $RESPONSE.\n 请检查 $URL_CHECK 是否正确。"
         exit 1
+    else
+        echo "有正确回应。"
     fi
 }
 
@@ -99,18 +104,16 @@ case $MODEL in
         exit 1
         ;;
 esac
-# 使用 URL_CHECK 检查HOST是否正常
+#使用 URL_CHECK 检查HOST是否正常
 CheckURL
-
+echo
 # 使用curl上传音频文件并获取转写结果
 URL="${HOST}/v1/audio/transcriptions"
-echo "文件 '${AUDIO_FILE}' 将被提交到 '${URL}' 转写为 '${FORMAT}' 格式。"
-echo -n "请等待…… "
 # 设置整个 curl 命令的参数为数组，每个参数独立存放
 declare -a headers=(
     '-H' 'accept: application/json'     # 包含特殊字符*，用单引号包裹
     '-H' 'Content-Type: multipart/form-data'
-    '-F' "file=@$AUDIO_FILE;type=$TYPE"  # 需变量替换，用双引号
+    '-F' "file=@\"$AUDIO_FILE\";type=$TYPE"  # 需变量替换，用双引号
     '-F' "model=$MODEL"
     '-F' "language=$PRESET_LANG"
     '-F' "prompt="
@@ -120,8 +123,12 @@ declare -a headers=(
 )
 
 # 上传音频文件并获取转写结果
-RESPONSE=$(curl --silent -X 'POST' "$URL" "${headers[@]}" )
+echo "文件 '${AUDIO_FILE}' 将被提交到 '${URL}' 转写为 '${FORMAT}' 格式。"
+$DEBUG && echo "DEBUG: curl -k --silent -X 'POST' \"$URL\" \"${headers[@]}\""
+echo -n "请等待…… "
+RESPONSE=$(curl -k --silent -X 'POST' "$URL" "${headers[@]}" )
 if [ $? -eq 0 ]; then # 输出或处理转写结果
+    $DEBUG && echo "DEBUG: $RESPONSE"
     RESPONSE_JQ_TXT=$(echo "$RESPONSE" | jq -r '.text')
     # 去掉扩展名并添加新的格式
     NEW_FILE="${AUDIO_FILE%.*}.$FORMAT"
@@ -133,11 +140,14 @@ if [ $? -eq 0 ]; then # 输出或处理转写结果
         echo "$RESPONSE" > "${NEW_FILE}.raw"
     fi
 else
+    echo
     echo "Response from server:"
     echo "$RESPONSE"
     exit 2
 fi
 
+echo "$(date) 结束."
+echo
 :<<'REM'
 # 返回模型列表
 curl -X 'GET' 'http://adeb.local:7860/v1/models/list' -H 'accept: application/json'
@@ -163,5 +173,6 @@ curl -X 'POST' \
 
 # 将目录下的播客语音文件转写文本
 date; for a in *.m4a ; do echo $a; time ./SpeechAIForgeDocker/trans.sh -f txt -m sensevoice -l zh "$a"; echo 'done.'; done; date
+for a in *.m4a ; do echo $a; ~/Public/AI/SpeechAIForgeDocker/trans.sh -f srt -m sensevoice -l zh "$a"; echo 'done.'; done
 REM
 exit 0
