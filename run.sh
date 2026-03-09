@@ -23,7 +23,7 @@ EXTEND_ENV='-e LOG_LEVEL=ERROR'
 #EXTEND_ENV='-e LOG_LEVEL=DEBUG'
 
 cli_common
-docker logs -f $CONTAINER_NAME
+# docker logs -f $CONTAINER_NAME
 
 :<<'EOF'
 # python3 webui.py --api
