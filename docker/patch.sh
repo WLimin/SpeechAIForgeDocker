@@ -28,10 +28,32 @@ sed -i -e 's/"git_commit": /"git_commit": os.environ.get("V_GIT_COMMIT") or /g' 
   File "/opt/conda/lib/python3.11/site-packages/torch/cuda/__init__.py", line 372, in _lazy_init
     torch._C._cuda_init()
 RuntimeError: Found no NVIDIA driver on your system. Please check that you have an NVIDIA GPU and installed a driver from http://www.nvidia.com/Download/index.aspx
+------------
+  File "/app/Speech-AI-Forge/modules/webui/app.py", line 149, in create_interface
+    create_system_tab(demo)
+  File "/app/Speech-AI-Forge/modules/webui/system_tab.py", line 46, in create_system_tab
+    demo.load(fn=get_system_status, inputs=[], outputs=status_box, every=5)
+TypeError: EventListener._setup.<locals>.event_trigger() got an unexpected keyword argument 'every'
+
+ File "/app/Speech-AI-Forge/modules/webui/finetune/speaker_ft_tab.py", line 129, in create_speaker_ft_tab
+    demo.load(spk_ft.flush, every=1, outputs=[log_output])
+TypeError: EventListener._setup.<locals>.event_trigger() got an unexpected keyword argument 'every'
+---------
+  File "/app/Speech-AI-Forge/webui.py", line 122, in process_webui_args
+    app, local_url, share_url = demo.launch(
+                                ^^^^^^^^^^^^
+TypeError: Blocks.launch() got an unexpected keyword argument 'show_api'
+
+gradio 5 issue #9463 https://github.com/gradio-app/gradio/issues/9463
 
 REM_B3
 #line 15
 sed -i -e '/gpu_mem = devices.get_gpu_memory()/s/$/ if devices.torch.cuda.is_available() else devices.MemUsage(devices.device, 0, 0, 0)/' /app/Speech-AI-Forge/modules/webui/system_tab.py
+#line 46
+sed -i -e '/demo\.load/i\                t = gr.Timer(5, active=False)\n                t.tick(fn=get_system_status, inputs=[], outputs=status_box)\n                demo.load(lambda: gr.Timer(active=True), None, t)' -e '/demo.load(fn=get_system_status/d'  /app/Speech-AI-Forge/modules/webui/system_tab.py
+sed -i -e '/demo\.load/i\        t = gr.Timer(1, active=False)\n        t.tick(spk_ft.flush, outputs=[log_output])\n        demo.load(lambda: gr.Timer(active=True), None, t)' -e '/demo.load(spk_ft/d' /app/Speech-AI-Forge/modules/webui/finetune/speaker_ft_tab.py
+
+sed -e '/show_api=False/s/^/#/' /app/Speech-AI-Forge/webui.py
 
 :<<'REM_B4'
  modules.core.models.tts.FireRed.FireRedTTSModel - INFO - loadding FireRedTTS...
@@ -120,6 +142,14 @@ spk_emotion2=spk_emotion,
     raise AttributeError(
 AttributeError: 'GPT2InferenceModel' object has no attribute 'generate'
 
+5.  File "/app/Speech-AI-Forge/modules/webui/audio_tools/video_cut.py", line 4, in <module>
+    from moviepy.editor import VideoFileClip
+ModuleNotFoundError: No module named 'moviepy.editor'
+
+这个错误，这几乎可以确定是因为你安装了新版（2.x）MoviePy，却 使用 了旧版（1.0.3）的导入语句
+
+from moviepy import *
+
 REM_B6
 #fix_err1:增加'GRADIO_ROOT_PATH'环境变量支持
 sed -i -e "s#\(footer_items.append(f\"\[api\](\)\(/docs)\")\)#\1{os.environ.get('GRADIO_ROOT_PATH', '')}\2#g" /app/Speech-AI-Forge/modules/webui/app.py
@@ -127,4 +157,6 @@ sed -i -e "s#\(footer_items.append(f\"\[api\](\)\(/docs)\")\)#\1{os.environ.get(
 sed -i -e  '/def get_gpt_sovits_v[1|2|3]/{N;N;d}' -e '/"gpt-sovits-v[1|2|3]"/d' /app/Speech-AI-Forge/modules/core/models/zoo/ModelZoo.py
 #fix_err3:替换第一个spk_emotion=spk_emotion
 sed -i '0,/spk_emotion=spk_emotion,/s//spk_emotion2=spk_emotion,/' /app/Speech-AI-Forge/modules/webui/speaker/speaker_editor.py
+# fix: MoviePy 1.x->2.x
+sed -i -e 's/from moviepy.editor import/from moviepy import/g' /app/Speech-AI-Forge/modules/webui/audio_tools/video_cut.py
 echo "done."
