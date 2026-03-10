@@ -53,7 +53,7 @@ sed -i -e '/gpu_mem = devices.get_gpu_memory()/s/$/ if devices.torch.cuda.is_ava
 sed -i -e '/demo\.load/i\                t = gr.Timer(5, active=False)\n                t.tick(fn=get_system_status, inputs=[], outputs=status_box)\n                demo.load(lambda: gr.Timer(active=True), None, t)' -e '/demo.load(fn=get_system_status/d'  /app/Speech-AI-Forge/modules/webui/system_tab.py
 sed -i -e '/demo\.load/i\        t = gr.Timer(1, active=False)\n        t.tick(spk_ft.flush, outputs=[log_output])\n        demo.load(lambda: gr.Timer(active=True), None, t)' -e '/demo.load(spk_ft/d' /app/Speech-AI-Forge/modules/webui/finetune/speaker_ft_tab.py
 
-sed -e '/show_api=False/s/^/#/' /app/Speech-AI-Forge/webui.py
+sed -i -e '/show_api=False/s/^/#/' /app/Speech-AI-Forge/webui.py
 
 :<<'REM_B4'
  modules.core.models.tts.FireRed.FireRedTTSModel - INFO - loadding FireRedTTS...
