@@ -7,7 +7,7 @@
 
 # This image is based on the latest official PyTorch image, because it already contains CUDA, CuDNN, and PyTorch
 # /opt/conda/bin/python3.11, uv, conda, pip3, venv
-FROM aibase:torch291_cuda130
+FROM aibase-torch291-cuda130:user
 # ubuntu 22.04 lts, jammy, python 3.11
 
 ARG UID=1000

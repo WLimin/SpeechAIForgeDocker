@@ -62,7 +62,7 @@ cli_common() {
             -e GRADIO_ROOT_PATH=${GRADIO_ROOT_PATH_ENV} \
             $EXTEND_ENV \
             $LINK_MODELS \
-         chat-tts-forge $CMD_ARG
+         chat-tts-forge:user $CMD_ARG
     fi
 }
 
